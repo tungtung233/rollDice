@@ -13,6 +13,14 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
+// Lights
+const ambientLight = new THREE.AmbientLight(0xffffff, 2.75);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 4);
+directionalLight.position.set(5, 8, 5);
+scene.add(directionalLight);
+
 // Floor
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 10),
