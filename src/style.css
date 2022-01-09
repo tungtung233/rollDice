@@ -1,19 +1,41 @@
-*
-{
-    margin: 0;
-    padding: 0;
+* {
+  margin: 0;
+  padding: 0;
 }
 
 html,
-body
-{
-    overflow: hidden;
+body {
+  overflow: hidden;
 }
 
-.webgl
-{
-    position: fixed;
-    top: 0;
-    left: 0;
-    outline: none;
+.webgl {
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
+}
+
+#roll-totals {
+  color: white;
+  position: absolute;
+  bottom: 100px;
+  right: 100px;
+  background-color: rgba(255, 255, 255, 0.5);
+  height: 80px;
+  width: 300px;
+  padding: 20px;
+  border-radius: 4px;
+  border: 2px solid darkgrey;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#dice-roll-button:hover {
+  cursor: pointer;
+}
+
+.dice-text.visible {
+  font-size: 40px;
 }
