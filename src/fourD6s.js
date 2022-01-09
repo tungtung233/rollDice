@@ -1,5 +1,6 @@
 import "./style.css";
 import * as THREE from "three";
+import * as CANNON from "cannon-es";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 // Sizes
@@ -16,6 +17,15 @@ const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
+
+// Physics #######
+const world = new CANNON.World();
+
+//currently, the broadphase is set to NaiveBroadPhase by default (part of Cannon), which means that collision testing is being done by every object with every other object - a lot of unnecessary calculations, especially if you know your objects will never even collide with each other
+world.broadphase = new CANNON.SAPBroadphase(world);
+//makes bodies go to sleep when they've been inactive - means that Cannon will stop collision testing it constantly, until another force re-activates it
+world.allowSleep = true;
+world.gravity.set(0, -9.82, 0); //gravity goes down on the y axis
 
 // Lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 2.75);
