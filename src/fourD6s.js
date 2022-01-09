@@ -27,13 +27,14 @@ world.broadphase = new CANNON.SAPBroadphase(world);
 world.allowSleep = true;
 world.gravity.set(0, -9.82, 0); //gravity goes down on the y axis
 
-// Lights
-const ambientLight = new THREE.AmbientLight(0xffffff, 2.75);
-scene.add(ambientLight);
-
-const directionalLight = new THREE.DirectionalLight(0xffffff, 4);
-directionalLight.position.set(5, 8, 5);
-scene.add(directionalLight);
+// Floor Body
+const floorShape = new CANNON.Plane(); // a plane's size in Cannon is infinite - it doesn't have edges and just keep going on and on
+const floorBody = new CANNON.Body();
+floorBody.mass = 0; //0 = tells Cannon that this element is static - you can throw anything at it and it won't move
+floorBody.addShape(floorShape);
+// rotating the plane as it's default starting position is standing up
+floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
+world.addBody(floorBody);
 
 // Floor
 const floor = new THREE.Mesh(
@@ -52,6 +53,14 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0, 10, 0);
 camera.lookAt(floor.position);
 scene.add(camera);
+
+// Lights
+const ambientLight = new THREE.AmbientLight(0xffffff, 2.75);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 4);
+directionalLight.position.set(5, 8, 5);
+scene.add(directionalLight);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
