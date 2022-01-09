@@ -13,6 +13,13 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
+// Floor
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 10),
+  new THREE.MeshStandardMaterial()
+);
+floor.rotation.x = -Math.PI * 0.5;
+
 // Camera
 const camera = new THREE.PerspectiveCamera(
   55,
@@ -20,6 +27,8 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
+camera.position.set(0, 10, 0);
+camera.lookAt(floor.position);
 scene.add(camera);
 
 // Renderer
