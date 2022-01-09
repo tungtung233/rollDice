@@ -1,11 +1,15 @@
 import "./style.css";
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 // Sizes
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
+
+// Models
+const d6Loader = new GLTFLoader();
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -59,6 +63,33 @@ window.addEventListener("resize", () => {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
+
+const createD6 = (positionArg) => {
+  d6Loader.load("/models/d6.gltf", (gltf) => {
+    const gltfScene = gltf.scene;
+
+    gltfScene.children[0].scale.set(0.65, 0.65, 0.65);
+    gltfScene.children[0].position.set(
+      positionArg.x,
+      positionArg.y,
+      positionArg.z
+    );
+
+    scene.add(gltfScene);
+  });
+};
+
+// Button
+const button = document
+  .getElementById("dice-roll-button")
+  .addEventListener("click", () => {
+    createD6({
+      //position
+      x: 1,
+      y: 1,
+      z: 1,
+    });
+  });
 
 // Animation
 const clock = new THREE.Clock();
