@@ -208,6 +208,62 @@ const button = document
     });
   });
 
+// Raycaster
+const raycaster1 = new THREE.Raycaster();
+
+// Dice totals
+let dice1Roll = 0;
+
+// UV coordinates of dice numbers on texture
+const uv1x = "0.1667";
+const uv1y = "0.4961";
+const uv2x = "0.8333";
+const uv2y = "0.4961";
+const uv3x = "0.5000";
+const uv3y = "0.4961";
+const uv4x = "0.8333";
+const uv4y = "0.8320";
+const uv5x = "0.5000";
+const uv5y = "0.8320";
+const uv6x = "0.1667";
+const uv6y = "0.8320";
+
+const determineDiceRoll = (diceUVCoordinates) => {
+  if (
+    diceUVCoordinates.uv.x.toFixed(4) === uv1x &&
+    diceUVCoordinates.uv.y.toFixed(4) === uv1y
+  ) {
+    return 1;
+  } else if (
+    diceUVCoordinates.uv.x.toFixed(4) === uv2x &&
+    diceUVCoordinates.uv.y.toFixed(4) === uv2y
+  ) {
+    return 2;
+  } else if (
+    diceUVCoordinates.uv.x.toFixed(4) === uv3x &&
+    diceUVCoordinates.uv.y.toFixed(4) === uv3y
+  ) {
+    return 3;
+  } else if (
+    diceUVCoordinates.uv.x.toFixed(4) === uv4x &&
+    diceUVCoordinates.uv.y.toFixed(4) === uv4y
+  ) {
+    return 4;
+  } else if (
+    diceUVCoordinates.uv.x.toFixed(4) === uv5x &&
+    diceUVCoordinates.uv.y.toFixed(4) === uv5y
+  ) {
+    return 5;
+  } else if (
+    diceUVCoordinates.uv.x.toFixed(4) === uv6x &&
+    diceUVCoordinates.uv.y.toFixed(4) === uv6y
+  ) {
+    return 6;
+  } else {
+    return 0;
+  }
+};
+
 // Animation
 const clock = new THREE.Clock();
 let oldElapsedTime = 0;
@@ -231,6 +287,19 @@ const tick = () => {
 
     object.convexHull.position.copy(object.body.position);
     object.convexHull.quaternion.copy(object.body.quaternion);
+  }
+
+  // Cast a ray
+  if (objectsToUpdate.length === 1) {
+    const dice1 = objectsToUpdate[0].gltfScene;
+    let rayOrigin1 = dice1.children[0].position;
+    let rayDirection1 = new THREE.Vector3(0, 1, 0);
+    raycaster1.set(rayOrigin1, rayDirection1);
+    const intersectDice1 = raycaster1.intersectObject(dice1);
+
+    if (intersectDice1[0]) {
+      dice1Roll = determineDiceRoll(intersectDice1[0]);
+    }
   }
 
   // Render
