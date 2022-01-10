@@ -20,6 +20,19 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
+// Textures
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+
+//the order in which these images are loaded cannot change
+const environmentMapTexture = cubeTextureLoader.load([
+  "/textures/environmentMaps/px.png", //positive x
+  "/textures/environmentMaps/nx.png", //negative x
+  "/textures/environmentMaps/py.png", //positive y
+  "/textures/environmentMaps/ny.png", //negative y
+  "/textures/environmentMaps/pz.png", //positive z
+  "/textures/environmentMaps/nz.png", //negative z
+]);
+
 // Physics #######
 const world = new CANNON.World();
 
@@ -170,6 +183,8 @@ const createD6 = (positionArg) => {
     const gltfScene = gltf.scene;
 
     gltfScene.children[0].scale.set(0.65, 0.65, 0.65);
+    gltfScene.children[0].material.envMap = environmentMapTexture;
+    gltfScene.children[0].material.envMapIntensity = 2;
 
     const { body, convexHull } = convexGeoToBody(gltfScene, positionArg);
 
