@@ -205,21 +205,21 @@ const createDice = () => {
   });
   createD6({
     //position
-    x: Math.random() - 0.5 + -1.5,
+    x: Math.random() - 0.5 + -2,
     y: Math.random() + 2,
     z: Math.random() - 0.5 + -4,
   });
   createD6({
     //position
-    x: Math.random() - 0.5 + 0.5,
+    x: Math.random() - 0.5 + -4,
     y: Math.random() + 3,
-    z: Math.random() - 0.5 + -5,
+    z: Math.random() - 0.5 + -3,
   });
   createD6({
     //position
     x: Math.random() - 0.5 + -4,
     y: Math.random() + 2,
-    z: Math.random() - 0.5 + -4,
+    z: Math.random() - 0.5 + -3,
   });
   document
     .getElementById("dice-roll-button")
