@@ -206,13 +206,37 @@ const button = document
       y: Math.random() + 3,
       z: Math.random() - 0.5 + -5,
     });
+    createD6({
+      //position
+      x: Math.random() - 0.5 + -1.5,
+      y: Math.random() + 2,
+      z: Math.random() - 0.5 + -4,
+    });
+    createD6({
+      //position
+      x: Math.random() - 0.5 + 0.5,
+      y: Math.random() + 3,
+      z: Math.random() - 0.5 + -5,
+    });
+    createD6({
+      //position
+      x: Math.random() - 0.5 + -4,
+      y: Math.random() + 2,
+      z: Math.random() - 0.5 + -4,
+    });
   });
 
 // Raycaster
 const raycaster1 = new THREE.Raycaster();
+const raycaster2 = new THREE.Raycaster();
+const raycaster3 = new THREE.Raycaster();
+const raycaster4 = new THREE.Raycaster();
 
 // Dice totals
 let dice1Roll = 0;
+let dice2Roll = 0;
+let dice3Roll = 0;
+let dice4Roll = 0;
 
 // UV coordinates of dice numbers on texture
 const uv1x = "0.1667";
@@ -276,7 +300,7 @@ const tick = () => {
   // Update physics world
   // '1/60' = 60fps
   // how much time has passed since the last frame/tick
-  // maxSubSteps?
+  // maxSubSteps
   world.step(1 / 60, deltaTime, 3);
 
   for (const object of objectsToUpdate) {
@@ -290,15 +314,43 @@ const tick = () => {
   }
 
   // Cast a ray
-  if (objectsToUpdate.length === 1) {
+  if (objectsToUpdate.length === 4) {
+    const rayDirection = new THREE.Vector3(0, 1, 0);
+
     const dice1 = objectsToUpdate[0].gltfScene;
     let rayOrigin1 = dice1.children[0].position;
-    let rayDirection1 = new THREE.Vector3(0, 1, 0);
-    raycaster1.set(rayOrigin1, rayDirection1);
+    raycaster1.set(rayOrigin1, rayDirection);
     const intersectDice1 = raycaster1.intersectObject(dice1);
 
     if (intersectDice1[0]) {
       dice1Roll = determineDiceRoll(intersectDice1[0]);
+    }
+
+    const dice2 = objectsToUpdate[1].gltfScene;
+    let rayOrigin2 = dice2.children[0].position;
+    raycaster2.set(rayOrigin2, rayDirection);
+    const intersectDice2 = raycaster2.intersectObject(dice2);
+
+    if (intersectDice2[0]) {
+      dice2Roll = determineDiceRoll(intersectDice2[0]);
+    }
+
+    const dice3 = objectsToUpdate[2].gltfScene;
+    let rayOrigin3 = dice3.children[0].position;
+    raycaster3.set(rayOrigin3, rayDirection);
+    const intersectDice3 = raycaster3.intersectObject(dice3);
+
+    if (intersectDice3[0]) {
+      dice3Roll = determineDiceRoll(intersectDice3[0]);
+    }
+
+    const dice4 = objectsToUpdate[3].gltfScene;
+    let rayOrigin4 = dice4.children[0].position;
+    raycaster4.set(rayOrigin4, rayDirection);
+    const intersectDice4 = raycaster4.intersectObject(dice4);
+
+    if (intersectDice4[0]) {
+      dice4Roll = determineDiceRoll(intersectDice4[0]);
     }
   }
 
