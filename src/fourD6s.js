@@ -2,6 +2,8 @@ import "./style.css";
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { threeToCannon } from "three-to-cannon";
+import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry";
 
 // Sizes
 const sizes = {
@@ -26,6 +28,19 @@ world.broadphase = new CANNON.SAPBroadphase(world);
 //makes bodies go to sleep when they've been inactive - means that Cannon will stop collision testing it constantly, until another force re-activates it
 world.allowSleep = true;
 world.gravity.set(0, -9.82, 0); //gravity goes down on the y axis
+
+const defaultMaterial = new CANNON.Material("default");
+
+const defaultContactMaterial = new CANNON.ContactMaterial(
+  defaultMaterial,
+  defaultMaterial,
+  {
+    friction: 0.1,
+    restitution: 0.6,
+  }
+);
+world.addContactMaterial(defaultContactMaterial);
+world.defaultContactMaterial = defaultContactMaterial;
 
 // Floor Body
 const floorShape = new CANNON.Plane(); // a plane's size in Cannon is infinite - it doesn't have edges and just keep going on and on
@@ -107,16 +122,60 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
+// Utils
+// Create an array that contains all objects that need to be updated
+const objectsToUpdate = [];
+
+const convexGeoToBody = (gltfScene, positionArg) => {
+  const position = gltfScene.children[0].geometry.attributes.position.array;
+  const vertices = [];
+
+  //get vertices
+  for (let i = 0; i < position.length; i += 3) {
+    vertices.push(
+      new THREE.Vector3(position[i], position[i + 1], position[i + 2])
+    );
+  }
+
+  const convexGeometry = new ConvexGeometry(vertices);
+
+  const convexHull = new THREE.Mesh(
+    convexGeometry,
+    new THREE.MeshBasicMaterial({
+      // giving the convexHull a material - so you can see the wireframe
+      color: 0x00ff00,
+      wireframe: true,
+    })
+  );
+  convexHull.scale.copy(gltfScene.children[0].scale);
+  // scene.add(convexHull); // show the hull
+
+  convexHull.position.copy(gltfScene.position);
+
+  const cannon_shape = threeToCannon(gltfScene.children[0]);
+
+  const body = new CANNON.Body({
+    shape: cannon_shape.shape,
+    mass: 10,
+    material: defaultMaterial,
+    position: new CANNON.Vec3(0, 3, 0),
+  });
+  body.position.copy(positionArg);
+
+  return { body, convexHull };
+};
+
 const createD6 = (positionArg) => {
   d6Loader.load("/models/d6.gltf", (gltf) => {
     const gltfScene = gltf.scene;
 
     gltfScene.children[0].scale.set(0.65, 0.65, 0.65);
-    gltfScene.children[0].position.set(
-      positionArg.x,
-      positionArg.y,
-      positionArg.z
-    );
+
+    const { body, convexHull } = convexGeoToBody(gltfScene, positionArg);
+
+    // Save in objectsToUpdate
+    objectsToUpdate.push({ gltfScene, body, convexHull });
+    world.addBody(body);
 
     scene.add(gltfScene);
   });
@@ -128,17 +187,36 @@ const button = document
   .addEventListener("click", () => {
     createD6({
       //position
-      x: 1,
-      y: 1,
-      z: 1,
+      x: Math.random() - 0.5 + -3,
+      y: Math.random() + 3,
+      z: Math.random() - 0.5 + -5,
     });
   });
 
 // Animation
 const clock = new THREE.Clock();
+let oldElapsedTime = 0;
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+  const deltaTime = elapsedTime - oldElapsedTime;
+  oldElapsedTime = elapsedTime;
+
+  // Update physics world
+  // '1/60' = 60fps
+  // how much time has passed since the last frame/tick
+  // maxSubSteps?
+  world.step(1 / 60, deltaTime, 3);
+
+  for (const object of objectsToUpdate) {
+    //matching the mesh's position to the body's position
+    object.gltfScene.children[0].position.copy(object.body.position);
+    //match the body's rotation too
+    object.gltfScene.children[0].quaternion.copy(object.body.quaternion);
+
+    object.convexHull.position.copy(object.body.position);
+    object.convexHull.quaternion.copy(object.body.quaternion);
+  }
 
   // Render
   renderer.render(scene, camera);
