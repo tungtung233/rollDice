@@ -58,10 +58,13 @@ world.addBody(floorRimBody);
 
 // Floor
 const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(20, 10),
-  new THREE.MeshStandardMaterial()
+  new THREE.PlaneGeometry(18, 9),
+  new THREE.MeshStandardMaterial({
+    color: "#000000",
+  })
 );
 floor.rotation.x = -Math.PI * 0.5;
+scene.add(floor);
 
 // Camera
 const camera = new THREE.PerspectiveCamera(
@@ -88,6 +91,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor("#141414");
 
 window.addEventListener("resize", () => {
   // Update sizes
