@@ -36,6 +36,26 @@ floorBody.addShape(floorShape);
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
 world.addBody(floorBody);
 
+// Floor Rims
+const floorRimShape = new CANNON.Plane();
+const floorRimBody = new CANNON.Body();
+
+const q1 = new CANNON.Quaternion();
+q1.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI * 0.5);
+
+const q2 = new CANNON.Quaternion();
+q2.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI);
+
+const q3 = new CANNON.Quaternion();
+q3.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI * 1.5);
+
+floorRimBody.addShape(floorRimShape, new CANNON.Vec3(0, 0, -3)); //top
+floorRimBody.addShape(floorRimShape, new CANNON.Vec3(-8, 0, 0), q1); //left
+floorRimBody.addShape(floorRimShape, new CANNON.Vec3(0, 0, 3), q2); //bottom
+floorRimBody.addShape(floorRimShape, new CANNON.Vec3(8, 0, 0), q3); //right
+
+world.addBody(floorRimBody);
+
 // Floor
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 10),
