@@ -196,35 +196,42 @@ const createD6 = (positionArg) => {
   });
 };
 
+const createDice = () => {
+  createD6({
+    //position
+    x: Math.random() - 0.5 + -3,
+    y: Math.random() + 3,
+    z: Math.random() - 0.5 + -5,
+  });
+  createD6({
+    //position
+    x: Math.random() - 0.5 + -1.5,
+    y: Math.random() + 2,
+    z: Math.random() - 0.5 + -4,
+  });
+  createD6({
+    //position
+    x: Math.random() - 0.5 + 0.5,
+    y: Math.random() + 3,
+    z: Math.random() - 0.5 + -5,
+  });
+  createD6({
+    //position
+    x: Math.random() - 0.5 + -4,
+    y: Math.random() + 2,
+    z: Math.random() - 0.5 + -4,
+  });
+  document
+    .getElementById("dice-roll-button")
+    .removeEventListener("click", createDice);
+  document.getElementById("roll-totals").classList.remove("hover");
+  document.getElementById("dice-roll-button").innerHTML = "Total = ";
+};
+
 // Button
 const button = document
   .getElementById("dice-roll-button")
-  .addEventListener("click", () => {
-    createD6({
-      //position
-      x: Math.random() - 0.5 + -3,
-      y: Math.random() + 3,
-      z: Math.random() - 0.5 + -5,
-    });
-    createD6({
-      //position
-      x: Math.random() - 0.5 + -1.5,
-      y: Math.random() + 2,
-      z: Math.random() - 0.5 + -4,
-    });
-    createD6({
-      //position
-      x: Math.random() - 0.5 + 0.5,
-      y: Math.random() + 3,
-      z: Math.random() - 0.5 + -5,
-    });
-    createD6({
-      //position
-      x: Math.random() - 0.5 + -4,
-      y: Math.random() + 2,
-      z: Math.random() - 0.5 + -4,
-    });
-  });
+  .addEventListener("click", createDice);
 
 // Raycaster
 const raycaster1 = new THREE.Raycaster();
@@ -351,6 +358,19 @@ const tick = () => {
 
     if (intersectDice4[0]) {
       dice4Roll = determineDiceRoll(intersectDice4[0]);
+    }
+
+    let rollTotals = dice1Roll + dice2Roll + dice3Roll + dice4Roll;
+
+    if (
+      dice1Roll !== 0 &&
+      dice2Roll !== 0 &&
+      dice3Roll !== 0 &&
+      dice4Roll !== 0
+    ) {
+
+      const totalsText = document.getElementById("dice-roll-button");
+      totalsText.innerHTML = `Total = ${rollTotals}`;
     }
   }
 

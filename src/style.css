@@ -32,10 +32,11 @@ body {
   align-items: center;
 }
 
-#dice-roll-button:hover {
+#roll-totals.hover:hover {
   cursor: pointer;
+  border: 4px solid darkgrey;
 }
 
-.dice-text.visible {
+.dice-text {
   font-size: 40px;
 }
