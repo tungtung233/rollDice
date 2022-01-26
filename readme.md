@@ -1,5 +1,7 @@
 # Roll Dice
 
+This project was completed with the goal of learning ThreeJS and incorporating external 3D models and textures, and applying physics to those models within the web browser.
+
 ## Screenshots
 ![Roll Dice](https://github.com/tungtung233/rollDice/blob/main/docs/rollDice.gif?raw=true)
 
